@@ -5,56 +5,63 @@
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate pipmitoDijon_env
 
-DATA=$pwd
-REF='/media/jbogoin/Data1/jbogoin/ref/hg38_Mlast/'
+data=$PWD
+ref='/media/data1/jbogoin/ref/fa_hg38/hg38_gendev'
 
 echo ""
 echo "PIPELINE MITO start"
 echo ""
 
 rm -Rf pipelinemito_output/
-mkdir pipelinemito_output/
+mkdir $data/pipelinemito_output
 
-# noms des fastq en minuscle obligatoire!
-echo "noms des fastq: conversion des majuscules en minuscules:"
-echo ""
-for file in *.fastq.gz;
-do
-    new=`echo $file |tr '[:upper:]' '[:lower:]'`;
-    echo "transformation $file => $new";
-    mv -i "$file" "$new"
-done
+if ls *.fastq.gz;
 
-echo ""
-echo "Liste des fastq à traiter:"
-echo ""
-if ! ls *.fastq.gz;
 then
-    echo "Il n'y a pas de fastq dans ce répertoire!";
-    echo "Utiliser bam_to_fastq.sh pour les générer.";
+    
+    # noms des fastq en minuscle obligatoire!
+    echo "noms des fastq:" 
+    echo "conversion des majuscules en minuscules + format .R1/R2.fastq.gz:"
+    
+    for file in *.fastq.gz;
+    do
+        new=`echo $file |tr '[:upper:]' '[:lower:]'`;
+        newbee=`echo $new | sed -e "s/_r/.R/g"`;
+        newbeebee=` echo $newbee | sed -e "s/_001//g"`;
+        echo "transformation $file => $newbeebee";
+        mv -i "$file" "$newbeebee"
+        
+    done
+
+    cd ~/pipelinemito;
+    echo ""
+    
+    sudo docker load -i pipelinemitov1.tar;
+    
+    echo ""
+    echo "Run en cours d'analyse:"
+    echo "$data"
+    echo ""
+
+    sudo docker run -v $data:/data:rw -v $ref:/mitopipeline:ro\
+    --env THREAD=8\
+    --env REFNAME=hg38_gendev.fa pipelinemitov1;
+    
+    echo "";
+    echo "PIPELINE MITO job done!";
+    echo "";
+
+else
+
+    echo "Il n'y a pas de fastq dans ce répertoire!"
     echo ""
     echo "PIPELINE MITO job not done!"
     echo ""
- 
-else
-    cd ~/pipelinemito;
-    echo ""
-    sudo docker load -i pipelinemitov1.tar;
-    echo ""
-    sudo docker run -v $DATA:/data:rw\
-        -v $REF:/mitopipeline:ro\
-        --env THREAD=8\
-        --env REFNAME=hg38_GenDev.fa\
-        pipelinemitov1;
-    
-    echo "Déplacement des fichiers de résultats vers /pipelinemito_output"
-    echo ""
-    sudo mv *.tsv pipelinemito_output;
-    sudo mv *.vcf pipelinemito_output;
-    sudo mv *.failed pipelinemito_output;
-    sudo mv *.log pipelinemito_output;
 
-    echo ""
-    echo "PIPELINE MITO job done!"
-    echo ""
 fi
+
+# echo "Déplacement des fichiers de résultats vers /pipelinemito_output";
+# mv $data/*.tsv $data/pipelinemito_output
+# mv $data/*.failed $data/pipelinemito_output
+# mv $data/*.log $data/pipelinemito_output
+# mv $data/*.vcf $data/pipelinemito_output
