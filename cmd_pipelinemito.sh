@@ -46,6 +46,24 @@ then
     sudo docker run -v $data:/data:rw -v $ref:/mitopipeline:ro\
     --env THREAD=8\
     --env REFNAME=hg38_gendev.fa pipelinemitov1;
+
+    echo "Déplacement des fastq vers le répertoire racine";
+    cd $data
+
+    fastq=`ls -R -1 | grep -E "fastq.gz"`
+
+    for seq in $fastq;
+    do
+        mv `find . -name $seq` .
+        
+    done
+
+    echo "Déplacement des fichiers de résultats vers /pipelinemito_output";
+    mv *.tsv pipelinemito_output
+    mv *.failed pipelinemito_output
+    mv *.log pipelinemito_output
+    mv *.vcf pipelinemito_output
+    mv sample.list.txt pipelinemito_output
     
     echo "";
     echo "PIPELINE MITO job done!";
@@ -60,8 +78,4 @@ else
 
 fi
 
-# echo "Déplacement des fichiers de résultats vers /pipelinemito_output";
-# mv $data/*.tsv $data/pipelinemito_output
-# mv $data/*.failed $data/pipelinemito_output
-# mv $data/*.log $data/pipelinemito_output
-# mv $data/*.vcf $data/pipelinemito_output
+
