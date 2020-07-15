@@ -13,25 +13,22 @@ echo "PIPELINE MITO start"
 echo ""
 
 rm -Rf pipelinemito_output/
-mkdir $data/pipelinemito_output
 
 if ls *.fastq.gz;
 
 then
     
-    # noms des fastq en minuscle obligatoire!
-    echo "noms des fastq:" 
-    echo "conversion des majuscules en minuscules + format .R1/R2.fastq.gz:"
+    # echo "noms des fastq:" 
+    # echo "conversion des majuscules en minuscules + format .R1/R2.fastq.gz:"
     
-    for file in *.fastq.gz;
-    do
-        new=`echo $file |tr '[:upper:]' '[:lower:]'`;
-        newbee=`echo $new | sed -e "s/_r/.R/g"`;
-        newbeebee=` echo $newbee | sed -e "s/_001//g"`;
-        echo "transformation $file => $newbeebee";
-        mv -i "$file" "$newbeebee"
-        
-    done
+    # for file in *.fastq.gz;
+    # do
+    #     new=`echo $file |tr '[:upper:]' '[:lower:]'`;
+    #     newbee=`echo $new | sed -e "s/_r/.R/g"`;
+    #     newbeebee=` echo $newbee | sed -e "s/_001//g"`;
+    #     echo "transformation $file => $newbeebee";
+    #     mv -i "$file" "$newbeebee"
+    # done
 
     cd ~/pipelinemito;
     echo ""
@@ -47,21 +44,22 @@ then
     --env THREAD=8\
     --env REFNAME=hg38_gendev.fa pipelinemitov1;
 
-    echo "Déplacement des fastq vers le répertoire racine";
+    echo "Deplacement des fastq vers le répertoire racine";
     cd $data
 
-    fastq=`ls -R -1 | grep -E "fastq.gz"`
+    fastq=`ls -R -1 | grep -E "fastq.gz"` 
 
     for seq in $fastq;
     do
-        mv `find . -name $seq` .
-        
+        sudo mv `find . -name $seq` .; 
     done
 
-    echo "Déplacement des fichiers de résultats vers /pipelinemito_output";
+    mkdir $data/pipelinemito_output
+
+    echo "Deplacement des fichiers de resultats vers /pipelinemito_output";
     mv *.tsv pipelinemito_output
     mv *.failed pipelinemito_output
-    mv *.log pipelinemito_output
+    mv *.log pipelinemito_output    
     mv *.vcf pipelinemito_output
     mv sample.list.txt pipelinemito_output
     
