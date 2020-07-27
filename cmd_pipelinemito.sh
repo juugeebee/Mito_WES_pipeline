@@ -6,7 +6,7 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate pipmitoDijon_env
 
 data=$PWD
-ref='/media/data1/jbogoin/ref/fa_hg38/hg38_gendev'
+ref='/media/Data1/jbogoin/ref/fa_hg38/hg38_GenDev'
 
 echo ""
 echo "PIPELINE MITO start"
@@ -41,8 +41,8 @@ then
     echo ""
 
     sudo docker run -v $data:/data:rw -v $ref:/mitopipeline:ro\
-    --env THREAD=8\
-    --env REFNAME=hg38_gendev.fa pipelinemitov1;
+    --env THREAD=6\
+    --env REFNAME=hg38_GenDev.fa pipelinemitov1;
 
     echo "Deplacement des fastq vers le répertoire racine";
     cd $data
