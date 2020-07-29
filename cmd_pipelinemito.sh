@@ -60,9 +60,15 @@ then
     mv *.tsv pipelinemito_output
     mv *.failed pipelinemito_output
     mv *.log pipelinemito_output    
-    mv *.vcf pipelinemito_output
     mv sample.list.txt pipelinemito_output
-    
+
+    conda deactivate
+    conda activate results_cnv
+
+    python ~/Mito_WES_pipeline/results_mito.py
+
+    conda deactivate
+
     echo "";
     echo "PIPELINE MITO job done!";
     echo "";
