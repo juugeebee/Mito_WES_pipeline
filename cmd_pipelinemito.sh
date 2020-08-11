@@ -17,18 +17,18 @@ rm -Rf pipelinemito_output/
 if ls *.fastq.gz;
 
 then
+  
+    echo "noms des fastq:" 
+    echo "conversion des majuscules en minuscules + format .R1/R2.fastq.gz:"
     
-    # echo "noms des fastq:" 
-    # echo "conversion des majuscules en minuscules + format .R1/R2.fastq.gz:"
-    
-    # for file in *.fastq.gz;
-    # do
-    #     new=`echo $file |tr '[:upper:]' '[:lower:]'`;
-    #     newbee=`echo $new | sed -e "s/_r/.R/g"`;
-    #     newbeebee=` echo $newbee | sed -e "s/_001//g"`;
-    #     echo "transformation $file => $newbeebee";
-    #     mv -i "$file" "$newbeebee"
-    # done
+    for file in *.fastq.gz;
+    do
+        new=`echo $file |tr '[:upper:]' '[:lower:]'`;
+        newbee=`echo $new | sed -e "s/_r/.R/g"`;
+        newbeebee=` echo $newbee | sed -e "s/_001//g"`;
+        echo "transformation $file => $newbeebee";
+        mv -i "$file" "$newbeebee"
+    done
 
     cd ~/pipelinemito;
     echo ""
@@ -66,6 +66,7 @@ then
     conda activate results_cnv
 
     python ~/Mito_WES_pipeline/results_mito.py
+    python ~/Mito_WES_pipeline/concatenate_mito_results.py
 
     conda deactivate
 

@@ -46,6 +46,7 @@ def dataframe(filename, large=True):
 
     return pd.DataFrame(result)
 
+
 ###########
 #PRINCIPAL#
 ###########
@@ -54,11 +55,11 @@ print('\npipelinemito results program openning.\n')
 
 if os.path.isfile('mito_results.csv'):
     os.remove('mito_results.csv')
-    print('Previous results file removed.')
+    print('Previous results file removed.\n')
 
 if os.path.isfile('mito_variants_patho.csv'):
     os.remove('mito_variants_patho.csv')
-    print('Previous results file removed.')
+    print('Previous results file removed.\n')
 
 
 li = []
@@ -90,7 +91,7 @@ for folder in folders:
                         sample_name = file.split('.')
                         tsv['sample'] = sample_name[0]
                         la.append(tsv)
-                       
+
 concat = pd.concat(li, axis=0, ignore_index=True)
 
 del concat['FILTER']
@@ -109,7 +110,7 @@ else:
     print('mito_variants_patho.csv generated.')
 
 report = pd.concat(la, axis=0, ignore_index=True)
-report.to_csv('mito_results.csv', index=False)
+report.to_csv('mito_results.csv', sep='\t', index=False)
 print('mito_results.csv generated.')
 
 print('\npipelinemito results program job done!\n')
